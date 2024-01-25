@@ -10,10 +10,3 @@ fileReadStream.on('data', (chunk) => {
   console.log(chunk);
 });
 
-fileReadStream.on('end', () => {
-  console.log('End');
-});
-
-fileReadStream.on('error', (error) => {
-  console.error('Error:', error);
-});
