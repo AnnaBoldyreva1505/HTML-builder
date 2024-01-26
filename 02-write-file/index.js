@@ -1,42 +1,24 @@
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+const fs = require('node:fs');
+const path = require('node:path');
+const process = require('node:process');
 
-const exitPrompt = `Enter more text or exit (type 'exit' or press 'ctrl + c'): `;
-
-const fileStream = fs.createWriteStream(
-  path.join(__dirname, '02-write-file.txt'),
+const writable = fs.createWriteStream(
+  path.join(__dirname, 'text.txt'),
+  'utf-8',
 );
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+process.stdout.write('Enter the text: ');
 
-const handleExit = () => {
-  rl.question('Are you sure you want to exit? (y or n): ', (answer) => {
-    if (answer.match(/^y(es)?$/i)) {
-      console.log('Goodbye!');
-      process.exit();
-    } else {
-      rl.setPrompt(exitPrompt);
-      rl.prompt();
-    }
-  });
-};
-
-rl.setPrompt(`Hello! Enter your text: `);
-rl.prompt();
-
-rl.on('line', (input) => {
-  if (input.toLowerCase() === 'exit') {
-    handleExit();
+process.stdin.on('data', (data) => {
+  if (data.toString().trim() === 'exit') {
+    process.stdout.write('Work complete');
+    process.exit();
   } else {
-    rl.setPrompt(exitPrompt);
-    rl.prompt();
+    writable.write(data);
   }
 });
 
-rl.on('SIGINT', () => {
-  handleExit();
+process.on('SIGINT', () => {
+  process.stdout.write('Work complete');
+  process.exit();
 });
